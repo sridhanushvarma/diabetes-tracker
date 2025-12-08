@@ -5,11 +5,14 @@ import ImportForm from '@/components/ImportForm';
 import ImportResults from '@/components/ImportResults';
 import { supabase } from '@/utils/supabase';
 import { ImportResult } from '@/utils/importUtils';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export default function Import() {
   const [user, setUser] = useState<any>(undefined);
   const [importResult, setImportResult] = useState<ImportResult | null>(null);
   const router = useRouter();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   useEffect(() => {
     async function getInitialSession() {
@@ -77,7 +80,7 @@ export default function Import() {
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold gradient-text">Import Data</h1>
-          <p className="text-neutral-500 mt-2">Import your glucose records from Excel or CSV files</p>
+          <p className={`mt-2 ${isDark ? 'text-gray-400' : 'text-neutral-500'}`}>Import your glucose records from Excel or CSV files</p>
           <div className="flex space-x-2 mt-4">
             <div className="h-1 w-20 bg-primary-500 rounded-full"></div>
             <div className="h-1 w-10 bg-accent-500 rounded-full"></div>

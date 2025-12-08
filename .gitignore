@@ -23,7 +23,13 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+.env
+.env.local.example
 .env*.local
+
+# local tooling and personal folders
+/venv/
+/OneDrive/
 
 # vercel
 .vercel
@@ -31,3 +37,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#MD files
+GITHUB_PAGES_DEPLOYMENT.md
+MANUAL_DEPLOYMENT.md
+project-report.md

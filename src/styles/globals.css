@@ -35,69 +35,69 @@
   --shadow-strength: 0.04;
 }
 
-/* Dark theme */
+/* Dark theme - Cohesive color palette for better visibility */
 .dark-theme {
-  --foreground-rgb: 241, 245, 249;
-  --background-rgb: 15, 23, 42;
-  --card-bg: 30, 41, 59;
-  --card-border: 51, 65, 85;
-  --primary-rgb: 56, 189, 248;
-  --primary-light-rgb: 7, 89, 133;
-  --primary-dark-rgb: 186, 230, 253;
-  --accent-rgb: 232, 121, 249;
-  --accent-light-rgb: 112, 26, 117;
-  --accent-dark-rgb: 245, 208, 254;
-  --tertiary-rgb: 45, 212, 191;
-  --tertiary-light-rgb: 17, 94, 89;
-  --tertiary-dark-rgb: 153, 246, 228;
+  --foreground-rgb: 226, 232, 240;
+  --background-rgb: 17, 24, 39;
+  --card-bg: 31, 41, 55;
+  --card-border: 55, 65, 81;
+  --primary-rgb: 96, 165, 250;
+  --primary-light-rgb: 30, 58, 95;
+  --primary-dark-rgb: 147, 197, 253;
+  --accent-rgb: 192, 132, 252;
+  --accent-light-rgb: 76, 29, 149;
+  --accent-dark-rgb: 216, 180, 254;
+  --tertiary-rgb: 52, 211, 153;
+  --tertiary-light-rgb: 6, 78, 59;
+  --tertiary-dark-rgb: 110, 231, 183;
   --success-rgb: 74, 222, 128;
-  --warning-rgb: 252, 211, 77;
+  --warning-rgb: 251, 191, 36;
   --error-rgb: 248, 113, 113;
-  --neutral-50-rgb: 15, 23, 42;
-  --neutral-100-rgb: 30, 41, 59;
-  --neutral-200-rgb: 51, 65, 85;
-  --neutral-300-rgb: 71, 85, 105;
-  --neutral-400-rgb: 100, 116, 139;
-  --neutral-500-rgb: 148, 163, 184;
-  --neutral-600-rgb: 203, 213, 225;
-  --neutral-700-rgb: 226, 232, 240;
-  --neutral-800-rgb: 241, 245, 249;
-  --neutral-900-rgb: 248, 250, 252;
+  --neutral-50-rgb: 17, 24, 39;
+  --neutral-100-rgb: 31, 41, 55;
+  --neutral-200-rgb: 55, 65, 81;
+  --neutral-300-rgb: 75, 85, 99;
+  --neutral-400-rgb: 107, 114, 128;
+  --neutral-500-rgb: 156, 163, 175;
+  --neutral-600-rgb: 209, 213, 219;
+  --neutral-700-rgb: 229, 231, 235;
+  --neutral-800-rgb: 243, 244, 246;
+  --neutral-900-rgb: 249, 250, 251;
   --shadow-color: 0, 0, 0;
-  --shadow-strength: 0.2;
+  --shadow-strength: 0.3;
 }
 
 /* Apply theme based on system preference if no theme is set */
 @media (prefers-color-scheme: dark) {
   :root:not(.light-theme):not(.dark-theme) {
-    --foreground-rgb: 241, 245, 249;
-    --background-rgb: 15, 23, 42;
-    --card-bg: 30, 41, 59;
-    --card-border: 51, 65, 85;
-    --primary-rgb: 56, 189, 248;
-    --primary-light-rgb: 7, 89, 133;
-    --primary-dark-rgb: 186, 230, 253;
-    --accent-rgb: 232, 121, 249;
-    --accent-light-rgb: 112, 26, 117;
-    --accent-dark-rgb: 245, 208, 254;
-    --tertiary-rgb: 45, 212, 191;
-    --tertiary-light-rgb: 17, 94, 89;
-    --tertiary-dark-rgb: 153, 246, 228;
+    --foreground-rgb: 226, 232, 240;
+    --background-rgb: 17, 24, 39;
+    --card-bg: 31, 41, 55;
+    --card-border: 55, 65, 81;
+    --primary-rgb: 96, 165, 250;
+    --primary-light-rgb: 30, 58, 95;
+    --primary-dark-rgb: 147, 197, 253;
+    --accent-rgb: 192, 132, 252;
+    --accent-light-rgb: 76, 29, 149;
+    --accent-dark-rgb: 216, 180, 254;
+    --tertiary-rgb: 52, 211, 153;
+    --tertiary-light-rgb: 6, 78, 59;
+    --tertiary-dark-rgb: 110, 231, 183;
     --success-rgb: 74, 222, 128;
-    --warning-rgb: 252, 211, 77;
+    --warning-rgb: 251, 191, 36;
     --error-rgb: 248, 113, 113;
-    --neutral-50-rgb: 15, 23, 42;
-    --neutral-100-rgb: 30, 41, 59;
-    --neutral-200-rgb: 51, 65, 85;
-    --neutral-300-rgb: 71, 85, 105;
-    --neutral-400-rgb: 100, 116, 139;
-    --neutral-500-rgb: 148, 163, 184;
-    --neutral-600-rgb: 203, 213, 225;
-    --neutral-700-rgb: 226, 232, 240;
-    --neutral-800-rgb: 241, 245, 249;
-    --neutral-900-rgb: 248, 250, 252;
+    --neutral-50-rgb: 17, 24, 39;
+    --neutral-100-rgb: 31, 41, 55;
+    --neutral-200-rgb: 55, 65, 81;
+    --neutral-300-rgb: 75, 85, 99;
+    --neutral-400-rgb: 107, 114, 128;
+    --neutral-500-rgb: 156, 163, 175;
+    --neutral-600-rgb: 209, 213, 219;
+    --neutral-700-rgb: 229, 231, 235;
+    --neutral-800-rgb: 243, 244, 246;
+    --neutral-900-rgb: 249, 250, 251;
     --shadow-color: 0, 0, 0;
-    --shadow-strength: 0.2;
+    --shadow-strength: 0.3;
   }
 }
 

@@ -1,26 +1,40 @@
 import React from 'react';
 import Link from 'next/link';
+import { withBasePath } from '@/utils/path';
 
 interface GithubPagesLinkProps {
   href: string;
+  as?: string;
   className?: string;
   children: React.ReactNode;
   onClick?: () => void;
 }
 
-// This component is a wrapper around Next.js Link component
-// It adds the basePath for GitHub Pages in production
-const GithubPagesLink: React.FC<GithubPagesLinkProps> = ({ href, className, children, onClick }) => {
-  // Get the base path from environment or default to '/Diabetes-Checker'
-  const basePath = process.env.NODE_ENV === 'production' 
-    ? '/Diabetes-Checker' 
-    : '';
-  
-  // Add the basePath to the href
-  const fullHref = `${basePath}${href}`;
-  
+/**
+ * A wrapper around Next.js Link component that handles GitHub Pages paths correctly
+ * This ensures that links work both in development and when deployed to GitHub Pages
+ */
+const GithubPagesLink: React.FC<GithubPagesLinkProps> = ({
+  href,
+  as,
+  className,
+  children,
+  onClick
+}) => {
+  // For external links, use the href as is
+  if (href.startsWith('http') || href.startsWith('mailto:')) {
+    return (
+      <Link href={href} className={className} onClick={onClick}>
+        {children}
+      </Link>
+    );
+  }
+
+  // For internal links, use the withBasePath utility
+  const asPath = as || withBasePath(href);
+
   return (
-    <Link href={href} as={fullHref} className={className} onClick={onClick}>
+    <Link href={href} as={asPath} className={className} onClick={onClick}>
       {children}
     </Link>
   );

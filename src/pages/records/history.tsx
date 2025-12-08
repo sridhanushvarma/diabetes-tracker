@@ -3,6 +3,7 @@ import Layout from '@/components/Layout';
 import RecordsList from '@/components/RecordsList';
 import { GlucoseRecord, supabase } from '@/utils/supabase';
 import { useRouter } from 'next/router';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export default function RecordsHistory() {
   const [user, setUser] = useState<any>(undefined);
@@ -11,6 +12,8 @@ export default function RecordsHistory() {
   const [loading, setLoading] = useState(true);
   const [groupBy, setGroupBy] = useState<'day' | 'week' | 'month'>('day');
   const [dateRange, setDateRange] = useState<'all' | '1m' | '3m' | '6m' | '1y'>('1m');
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   useEffect(() => {
     async function getInitialSession() {
@@ -120,11 +123,11 @@ export default function RecordsHistory() {
     <Layout title="Records History">
       <div className="max-w-4xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-          <h1 className="text-2xl font-bold mb-4 md:mb-0">Your Glucose Records</h1>
+          <h1 className={`text-2xl font-bold mb-4 md:mb-0 ${isDark ? 'text-gray-100' : ''}`}>Your Glucose Records</h1>
 
           <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
             <div>
-              <label htmlFor="groupBy" className="block text-sm font-medium text-gray-700 mb-1">Group By</label>
+              <label htmlFor="groupBy" className={`block text-sm font-medium mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Group By</label>
               <select
                 id="groupBy"
                 value={groupBy}
@@ -138,7 +141,7 @@ export default function RecordsHistory() {
             </div>
 
             <div>
-              <label htmlFor="dateRange" className="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
+              <label htmlFor="dateRange" className={`block text-sm font-medium mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Date Range</label>
               <select
                 id="dateRange"
                 value={dateRange}
@@ -157,7 +160,7 @@ export default function RecordsHistory() {
 
         {loading ? (
           <div className="card p-12 text-center">
-            <p className="text-gray-500">Loading records...</p>
+            <p className={isDark ? 'text-gray-400' : 'text-gray-500'}>Loading records...</p>
           </div>
         ) : (
           <RecordsList records={records} groupBy={groupBy} />

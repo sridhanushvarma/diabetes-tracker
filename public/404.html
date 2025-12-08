@@ -4,8 +4,50 @@
   <meta charset="utf-8">
   <title>Page Not Found</title>
   <script>
-    // Simple redirect to index.html
-    window.location.href = './index.html';
+    // Single Page Apps for GitHub Pages
+    // MIT License
+    // Adapted from https://github.com/rafgraph/spa-github-pages
+    (function() {
+      // This script takes the current URL and converts the path and query
+      // string into just a query string, and then redirects the browser
+      // to the new URL with only a query string and hash fragment
+
+      // This is specifically for GitHub Pages hosting
+      var pathSegmentsToKeep = 1; // Keep the repository name
+      var repoName = 'Diabetes-Checker';
+
+      var l = window.location;
+
+      // Extract the path from the URL
+      var pathname = l.pathname;
+
+      // Special handling for known routes
+      var knownRoutes = ['/auth', '/dashboard', '/import', '/records'];
+      var isKnownRoute = false;
+
+      for (var i = 0; i < knownRoutes.length; i++) {
+        if (pathname.indexOf(knownRoutes[i]) !== -1) {
+          isKnownRoute = true;
+          break;
+        }
+      }
+
+      if (isKnownRoute) {
+        // For known routes, redirect to the root with a hash
+        var route = pathname.split('/').slice(pathSegmentsToKeep + 1).join('/');
+        var redirectUrl = l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+                         '/' + repoName + '/#/' + route +
+                         (l.search ? l.search : '');
+
+        window.location.replace(redirectUrl);
+      } else {
+        // For unknown routes, redirect to the homepage
+        window.location.replace(
+          l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+          '/' + repoName + '/'
+        );
+      }
+    })();
   </script>
   <style>
     body {
@@ -31,11 +73,25 @@
     a:hover {
       text-decoration: underline;
     }
+    .loader {
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #0070f3;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
-  <h1>Page Not Found</h1>
-  <p>The page you're looking for doesn't exist or has been moved.</p>
-  <p>If you are not redirected automatically, <a href="./index.html">click here to go to the homepage</a>.</p>
+  <h1>Redirecting...</h1>
+  <div class="loader"></div>
+  <p>The page will redirect automatically.</p>
+  <p>If you are not redirected, <a href="/Diabetes-Checker/">click here to go to the homepage</a>.</p>
 </body>
 </html>

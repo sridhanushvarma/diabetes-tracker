@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import { addGlucoseRecord, supabase } from '@/utils/supabase';
 import { formatDate } from '@/utils/dateUtils';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export default function RecordForm() {
   const [user, setUser] = useState<any>(null);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   useEffect(() => {
     async function getInitialSession() {
@@ -78,8 +81,14 @@ export default function RecordForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {message && (
-        <div className={`p-4 rounded-lg ${
-          message.type === 'error' ? 'bg-red-50 text-red-700 border border-red-100' : 'bg-green-50 text-green-700 border border-green-100'
+        <div className={`p-4 rounded-lg border ${
+          message.type === 'error'
+            ? isDark
+              ? 'bg-red-900/30 text-red-300 border-red-800'
+              : 'bg-red-50 text-red-700 border-red-100'
+            : isDark
+              ? 'bg-green-900/30 text-green-300 border-green-800'
+              : 'bg-green-50 text-green-700 border-green-100'
         }`}>
           <div className="flex items-center">
             {message.type === 'error' ? (
