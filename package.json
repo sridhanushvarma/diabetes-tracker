@@ -6,11 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "postbuild": "node scripts/fix-asset-paths.js",
-    "deploy": "gh-pages -d out",
-    "deploy:manual": "node manual-deploy.js",
-    "build:gh-pages": "npm run build && npm run postbuild"
+    "lint": "next lint"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.2",
