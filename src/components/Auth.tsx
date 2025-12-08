@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { supabase } from '@/utils/supabase';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export default function Auth() {
   const router = useRouter();
@@ -9,6 +10,8 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: 'error' | 'success' } | null>(null);
   const [isSignUp, setIsSignUp] = useState(false);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,7 +55,9 @@ export default function Auth() {
 
   return (
     <div className="max-w-md mx-auto">
-      <div className="bg-white rounded-xl shadow-lg p-8 border border-neutral-100">
+      <div className={`rounded-xl shadow-lg p-8 border ${
+        isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+      }`}>
         <div className="flex justify-center mb-8">
           <div className="bg-gradient-to-br from-primary-500 to-accent-500 p-4 rounded-xl shadow-md">
             <svg className="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -62,17 +67,19 @@ export default function Auth() {
           </div>
         </div>
 
-        <h2 className="text-2xl font-bold mb-2 text-center gradient-text">
+        <h2 className={`text-2xl font-bold mb-2 text-center ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>
           {isSignUp ? 'Create Your Account' : 'Welcome Back'}
         </h2>
 
-        <p className="text-center text-neutral-500 text-sm mb-6">
+        <p className={`text-center text-sm mb-6 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
           {isSignUp ? 'Join us to track your diabetes metrics' : 'Sign in to access your health dashboard'}
         </p>
 
         {message && (
           <div className={`p-4 rounded-lg mb-6 ${
-            message.type === 'error' ? 'bg-rose-50 text-rose-700 border border-rose-100' : 'bg-tertiary-50 text-tertiary-700 border border-tertiary-100'
+            message.type === 'error'
+              ? isDark ? 'bg-red-900/30 text-red-300 border border-red-800' : 'bg-rose-50 text-rose-700 border border-rose-200'
+              : isDark ? 'bg-green-900/30 text-green-300 border border-green-800' : 'bg-green-50 text-green-700 border border-green-200'
           }`}>
             <div className="flex items-center">
               {message.type === 'error' ? (
@@ -168,7 +175,9 @@ export default function Auth() {
         <div className="mt-6 text-center">
           <button
             onClick={() => setIsSignUp(!isSignUp)}
-            className="text-primary-600 hover:text-primary-500 text-sm font-medium transition-colors duration-200"
+            className={`text-sm font-medium transition-colors duration-200 ${
+              isDark ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-500'
+            }`}
           >
             {isSignUp ? 'Already have an account? Sign In' : 'Need an account? Sign Up'}
           </button>
@@ -176,12 +185,12 @@ export default function Auth() {
       </div>
 
       <div className="flex items-center justify-center space-x-2 mt-8">
-        <div className="w-8 h-1 rounded-full bg-primary-200"></div>
-        <div className="w-2 h-1 rounded-full bg-accent-200"></div>
-        <div className="w-2 h-1 rounded-full bg-tertiary-200"></div>
+        <div className={`w-8 h-1 rounded-full ${isDark ? 'bg-blue-700' : 'bg-blue-200'}`}></div>
+        <div className={`w-2 h-1 rounded-full ${isDark ? 'bg-purple-700' : 'bg-purple-200'}`}></div>
+        <div className={`w-2 h-1 rounded-full ${isDark ? 'bg-emerald-700' : 'bg-emerald-200'}`}></div>
       </div>
 
-      <p className="text-center text-neutral-500 text-sm mt-4">
+      <p className={`text-center text-sm mt-4 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
         Secure, private, and designed for your health journey.
       </p>
     </div>

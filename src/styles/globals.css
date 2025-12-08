@@ -4,35 +4,36 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
 
 /* Light theme (default) */
-:root {
-  --foreground-rgb: 15, 23, 42;
-  --background-rgb: 248, 250, 252;
+:root,
+.light-theme {
+  --foreground-rgb: 17, 24, 39;
+  --background-rgb: 249, 250, 251;
   --card-bg: 255, 255, 255;
-  --card-border: 241, 245, 249;
-  --primary-rgb: 14, 165, 233;
-  --primary-light-rgb: 224, 242, 254;
-  --primary-dark-rgb: 2, 132, 199;
-  --accent-rgb: 217, 70, 239;
-  --accent-light-rgb: 250, 232, 255;
-  --accent-dark-rgb: 192, 38, 211;
+  --card-border: 229, 231, 235;
+  --primary-rgb: 37, 99, 235;
+  --primary-light-rgb: 219, 234, 254;
+  --primary-dark-rgb: 29, 78, 216;
+  --accent-rgb: 168, 85, 247;
+  --accent-light-rgb: 243, 232, 255;
+  --accent-dark-rgb: 147, 51, 234;
   --tertiary-rgb: 20, 184, 166;
   --tertiary-light-rgb: 204, 251, 241;
   --tertiary-dark-rgb: 13, 148, 136;
-  --success-rgb: 34, 197, 94;
-  --warning-rgb: 245, 158, 11;
-  --error-rgb: 239, 68, 68;
-  --neutral-50-rgb: 248, 250, 252;
-  --neutral-100-rgb: 241, 245, 249;
-  --neutral-200-rgb: 226, 232, 240;
-  --neutral-300-rgb: 203, 213, 225;
-  --neutral-400-rgb: 148, 163, 184;
-  --neutral-500-rgb: 100, 116, 139;
-  --neutral-600-rgb: 71, 85, 105;
-  --neutral-700-rgb: 51, 65, 85;
-  --neutral-800-rgb: 30, 41, 59;
-  --neutral-900-rgb: 15, 23, 42;
+  --success-rgb: 22, 163, 74;
+  --warning-rgb: 234, 88, 12;
+  --error-rgb: 220, 38, 38;
+  --neutral-50-rgb: 249, 250, 251;
+  --neutral-100-rgb: 243, 244, 246;
+  --neutral-200-rgb: 229, 231, 235;
+  --neutral-300-rgb: 209, 213, 219;
+  --neutral-400-rgb: 156, 163, 175;
+  --neutral-500-rgb: 107, 114, 128;
+  --neutral-600-rgb: 75, 85, 99;
+  --neutral-700-rgb: 55, 65, 81;
+  --neutral-800-rgb: 31, 41, 55;
+  --neutral-900-rgb: 17, 24, 39;
   --shadow-color: 0, 0, 0;
-  --shadow-strength: 0.04;
+  --shadow-strength: 0.08;
 }
 
 /* Dark theme - Cohesive color palette for better visibility */

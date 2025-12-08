@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
-import Layout from '@/components/Layout';
+import ThemeLayout from '@/components/ThemeLayout';
 import RecordForm from '@/components/RecordForm';
 import { useRouter } from 'next/router';
 import { supabase } from '@/utils/supabase';
+import { useTheme } from '@/contexts/ThemeContext';
 
-export default function AddRecord() {
+function AddRecordContent() {
   const [user, setUser] = useState<any>(undefined);
   const router = useRouter();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   useEffect(() => {
     async function getInitialSession() {
@@ -41,20 +44,28 @@ export default function AddRecord() {
 
   if (user === undefined || user === null) {
     return (
-      <Layout title="Loading...">
-        <div className="flex items-center justify-center h-64">
-          <p className="text-gray-500">Loading...</p>
-        </div>
-      </Layout>
+      <div className="flex items-center justify-center h-64">
+        <p className={isDark ? 'text-gray-400' : 'text-gray-600'}>Loading...</p>
+      </div>
     );
   }
 
   return (
-    <Layout title="Add Record">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-2xl font-bold mb-6">Add New Glucose Reading</h1>
+    <div className="max-w-2xl mx-auto">
+      <h1 className={`text-2xl font-bold mb-6 ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>Add New Glucose Reading</h1>
+      <div className={`rounded-xl shadow-sm p-6 border ${
+        isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+      }`}>
         <RecordForm />
       </div>
-    </Layout>
+    </div>
+  );
+}
+
+export default function AddRecord() {
+  return (
+    <ThemeLayout title="Add Record">
+      <AddRecordContent />
+    </ThemeLayout>
   );
 }

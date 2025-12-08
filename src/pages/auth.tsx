@@ -1,4 +1,4 @@
-import Layout from '@/components/Layout';
+import ThemeLayout from '@/components/ThemeLayout';
 import Auth from '@/components/Auth';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
@@ -40,10 +40,10 @@ export default function AuthPage() {
   }, [user, router]);
 
   return (
-    <Layout title="Sign In">
+    <ThemeLayout title="Sign In">
       <div className="max-w-md mx-auto py-12">
         <Auth />
       </div>
-    </Layout>
+    </ThemeLayout>
   );
 }

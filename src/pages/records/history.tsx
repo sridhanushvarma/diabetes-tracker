@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import Layout from '@/components/Layout';
+import ThemeLayout from '@/components/ThemeLayout';
 import RecordsList from '@/components/RecordsList';
 import { GlucoseRecord, supabase } from '@/utils/supabase';
 import { useRouter } from 'next/router';
 import { useTheme } from '@/contexts/ThemeContext';
 
-export default function RecordsHistory() {
+function RecordsHistoryContent() {
   const [user, setUser] = useState<any>(undefined);
   const router = useRouter();
   const [records, setRecords] = useState<GlucoseRecord[]>([]);
@@ -111,61 +111,68 @@ export default function RecordsHistory() {
 
   if (user === undefined || user === null) {
     return (
-      <Layout title="Loading...">
-        <div className="flex items-center justify-center h-64">
-          <p className="text-gray-500">Loading...</p>
-        </div>
-      </Layout>
+      <div className="flex items-center justify-center h-64">
+        <p className={isDark ? 'text-gray-400' : 'text-gray-600'}>Loading...</p>
+      </div>
     );
   }
 
   return (
-    <Layout title="Records History">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-          <h1 className={`text-2xl font-bold mb-4 md:mb-0 ${isDark ? 'text-gray-100' : ''}`}>Your Glucose Records</h1>
+    <div className="max-w-4xl mx-auto">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+        <h1 className={`text-2xl font-bold mb-4 md:mb-0 ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>Your Glucose Records</h1>
 
-          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
-            <div>
-              <label htmlFor="groupBy" className={`block text-sm font-medium mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Group By</label>
-              <select
-                id="groupBy"
-                value={groupBy}
-                onChange={(e) => setGroupBy(e.target.value as 'day' | 'week' | 'month')}
-                className="input-field"
-              >
-                <option value="day">Day</option>
-                <option value="week">Week</option>
-                <option value="month">Month</option>
-              </select>
-            </div>
+        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+          <div>
+            <label htmlFor="groupBy" className={`block text-sm font-medium mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Group By</label>
+            <select
+              id="groupBy"
+              value={groupBy}
+              onChange={(e) => setGroupBy(e.target.value as 'day' | 'week' | 'month')}
+              className="input-field"
+            >
+              <option value="day">Day</option>
+              <option value="week">Week</option>
+              <option value="month">Month</option>
+            </select>
+          </div>
 
-            <div>
-              <label htmlFor="dateRange" className={`block text-sm font-medium mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Date Range</label>
-              <select
-                id="dateRange"
-                value={dateRange}
-                onChange={(e) => setDateRange(e.target.value as 'all' | '1m' | '3m' | '6m' | '1y')}
-                className="input-field"
-              >
-                <option value="1m">Last Month</option>
-                <option value="3m">Last 3 Months</option>
-                <option value="6m">Last 6 Months</option>
-                <option value="1y">Last Year</option>
-                <option value="all">All Time</option>
-              </select>
-            </div>
+          <div>
+            <label htmlFor="dateRange" className={`block text-sm font-medium mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Date Range</label>
+            <select
+              id="dateRange"
+              value={dateRange}
+              onChange={(e) => setDateRange(e.target.value as 'all' | '1m' | '3m' | '6m' | '1y')}
+              className="input-field"
+            >
+              <option value="1m">Last Month</option>
+              <option value="3m">Last 3 Months</option>
+              <option value="6m">Last 6 Months</option>
+              <option value="1y">Last Year</option>
+              <option value="all">All Time</option>
+            </select>
           </div>
         </div>
-
-        {loading ? (
-          <div className="card p-12 text-center">
-            <p className={isDark ? 'text-gray-400' : 'text-gray-500'}>Loading records...</p>
-          </div>
-        ) : (
-          <RecordsList records={records} groupBy={groupBy} />
-        )}
       </div>
-    </Layout>
+
+      {loading ? (
+        <div className={`rounded-xl shadow-sm p-12 text-center border ${
+          isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+        }`}>
+          <p className={isDark ? 'text-gray-400' : 'text-gray-600'}>Loading records...</p>
+        </div>
+      ) : (
+        <RecordsList records={records} groupBy={groupBy} />
+      )}
+    </div>
+  );
+}
+
+// Wrapper component to provide theme context
+export default function RecordsHistory() {
+  return (
+    <ThemeLayout title="Records History">
+      <RecordsHistoryContent />
+    </ThemeLayout>
   );
 }
