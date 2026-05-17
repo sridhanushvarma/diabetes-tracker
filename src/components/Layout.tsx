@@ -16,6 +16,14 @@ export default function Layout({ children, title = 'Diabetes Tracker', theme = '
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   useEffect(() => {
     // Get current user
@@ -50,8 +58,8 @@ export default function Layout({ children, title = 'Diabetes Tracker', theme = '
 
   const isActive = (path: string) => {
     return router.pathname === path
-      ? 'bg-primary-700/20 text-white font-medium'
-      : 'text-primary-100 hover:bg-primary-700/10 transition-colors duration-200';
+      ? 'bg-white/20 text-white font-semibold shadow-inner ring-1 ring-white/20 scale-[1.03]'
+      : 'text-primary-100 hover:bg-white/10 hover:scale-[1.03] hover:-translate-y-0.5 transition-all duration-200';
   };
 
   return (
@@ -71,19 +79,23 @@ export default function Layout({ children, title = 'Diabetes Tracker', theme = '
         theme={theme}
       />
 
-      <header className="bg-gradient-to-r from-primary-600 to-primary-700 dark:from-primary-900 dark:to-primary-800 text-white shadow-md">
-        <div className="container mx-auto px-4 py-4">
+      <header
+        className={`sticky top-0 z-40 text-white transition-all duration-500 bg-gradient-to-r from-primary-600 via-accent-600 to-primary-700 dark:from-primary-900 dark:via-accent-900 dark:to-primary-800 bg-[length:200%_auto] animate-gradient ${
+          scrolled ? 'shadow-2xl backdrop-blur-md py-0' : 'shadow-md'
+        }`}
+      >
+        <div className={`container mx-auto px-4 transition-all duration-500 ${scrolled ? 'py-2' : 'py-4'}`}>
           <div className="flex justify-between items-center">
             <Link href="/" className="flex items-center space-x-2 group">
-              <div className="bg-white/10 p-2 rounded-lg group-hover:bg-white/20 transition-all duration-300">
-                <svg className="w-6 h-6 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <div className="bg-white/10 p-2 rounded-lg group-hover:bg-white/20 transition-all duration-300 group-hover:rotate-[10deg] group-hover:scale-105">
+                <svg className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M12 4.75L19.25 9L12 13.25L4.75 9L12 4.75Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   <path d="M9.25 11.5L4.75 14L12 18.25L19.25 14L14.75 11.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
               <div>
                 <span className="text-xl font-display font-semibold tracking-tight">DiabetesTracker</span>
-                <div className="text-xs text-primary-100 dark:text-primary-300 font-light">Monitor your health</div>
+                <div className={`text-xs text-primary-100 dark:text-primary-300 font-light overflow-hidden transition-all duration-500 ${scrolled ? 'max-h-0 opacity-0' : 'max-h-5 opacity-100'}`}>Monitor your health</div>
               </div>
             </Link>
 
@@ -188,6 +200,7 @@ export default function Layout({ children, title = 'Diabetes Tracker', theme = '
             </div>
           </div>
         </div>
+        <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-white/60 to-transparent animate-gradient bg-[length:200%_auto]" />
       </header>
 
       <main className="flex-grow container mx-auto px-4 py-6 sm:py-8 md:py-12 lg:py-16">
@@ -199,7 +212,7 @@ export default function Layout({ children, title = 'Diabetes Tracker', theme = '
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex flex-col items-center md:items-start mb-6 md:mb-0">
               <div className="flex items-center space-x-2 mb-2">
-                <div className="bg-gradient-to-r from-primary-500 to-accent-500 p-2 rounded-lg shadow-sm">
+                <div className="bg-gradient-to-r from-primary-500 to-accent-500 p-2 rounded-lg shadow-sm animate-float">
                   <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 4.75L19.25 9L12 13.25L4.75 9L12 4.75Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     <path d="M9.25 11.5L4.75 14L12 18.25L19.25 14L14.75 11.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -214,19 +227,19 @@ export default function Layout({ children, title = 'Diabetes Tracker', theme = '
 
             <div className="flex flex-col items-center md:items-end">
               <div className="flex space-x-4 mb-4">
-                <a href="#" className="text-primary-500 hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300 transition-colors focus-visible" aria-label="Privacy Policy">
+                <a href="#" className="text-primary-500 hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300 transition-all duration-200 hover:scale-125 hover:-translate-y-1 focus-visible" aria-label="Privacy Policy">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                   <span className="sr-only">Privacy Policy</span>
                 </a>
-                <a href="#" className="text-primary-500 hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300 transition-colors focus-visible" aria-label="Help">
+                <a href="#" className="text-primary-500 hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300 transition-all duration-200 hover:scale-125 hover:-translate-y-1 focus-visible" aria-label="Help">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <span className="sr-only">Help</span>
                 </a>
-                <a href="#" className="text-primary-500 hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300 transition-colors focus-visible" aria-label="Contact">
+                <a href="#" className="text-primary-500 hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300 transition-all duration-200 hover:scale-125 hover:-translate-y-1 focus-visible" aria-label="Contact">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>

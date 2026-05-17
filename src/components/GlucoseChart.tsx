@@ -8,14 +8,16 @@ import {
   Title,
   Tooltip,
   Legend,
+  Filler,
   ChartOptions,
+  Plugin,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { GlucoseRecord } from '@/utils/supabase';
 import { prepareChartData, prepareChartDataDarkMode } from '@/utils/statsCalculator';
 import { useTheme } from '@/contexts/ThemeContext';
+import { usePreferences } from '@/contexts/PreferencesContext';
 
-// Register ChartJS components
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -23,7 +25,8 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  Filler
 );
 
 type GlucoseChartProps = {
@@ -34,34 +37,80 @@ type GlucoseChartProps = {
 export default function GlucoseChart({ records, title = 'Glucose Levels Over Time' }: GlucoseChartProps) {
   const [chartData, setChartData] = useState<any>(null);
   const { theme } = useTheme();
+  const { targetRange } = usePreferences();
   const isDark = theme === 'dark';
 
   useEffect(() => {
     if (records.length > 0) {
-      setChartData(isDark ? prepareChartDataDarkMode(records) : prepareChartData(records));
+      const base = isDark ? prepareChartDataDarkMode(records) : prepareChartData(records);
+      // Soft gradient fill beneath each line for depth.
+      const withFill = {
+        ...base,
+        datasets: base.datasets.map((d: any) => ({
+          ...d,
+          fill: true,
+          backgroundColor: (ctx: any) => {
+            const { chart } = ctx;
+            const { ctx: c, chartArea } = chart;
+            if (!chartArea) return d.backgroundColor;
+            const g = c.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+            g.addColorStop(0, d.borderColor + (isDark ? '55' : '40'));
+            g.addColorStop(1, d.borderColor + '00');
+            return g;
+          },
+          pointRadius: 3,
+          pointHoverRadius: 7,
+        })),
+      };
+      setChartData(withFill);
     }
   }, [records, isDark]);
+
+  // Plugin: shaded target-range band + dashed boundary lines.
+  const targetBandPlugin: Plugin<'line'> = {
+    id: 'targetBand',
+    beforeDatasetsDraw(chart) {
+      const { ctx, chartArea, scales } = chart;
+      const y = scales.y;
+      if (!y || !chartArea) return;
+      const top = y.getPixelForValue(targetRange.high);
+      const bottom = y.getPixelForValue(targetRange.low);
+      ctx.save();
+      ctx.fillStyle = isDark ? 'rgba(52, 211, 153, 0.10)' : 'rgba(16, 185, 129, 0.12)';
+      ctx.fillRect(chartArea.left, top, chartArea.right - chartArea.left, bottom - top);
+      ctx.strokeStyle = isDark ? 'rgba(52, 211, 153, 0.45)' : 'rgba(16, 185, 129, 0.5)';
+      ctx.setLineDash([5, 5]);
+      ctx.lineWidth = 1;
+      [top, bottom].forEach((py) => {
+        ctx.beginPath();
+        ctx.moveTo(chartArea.left, py);
+        ctx.lineTo(chartArea.right, py);
+        ctx.stroke();
+      });
+      ctx.restore();
+    },
+  };
 
   const options: ChartOptions<'line'> = {
     responsive: true,
     maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    animation: {
+      duration: 1400,
+      easing: 'easeOutQuart',
+    },
     plugins: {
       legend: {
         position: 'top' as const,
         labels: {
           usePointStyle: true,
           boxWidth: 6,
-          font: {
-            family: "'Inter', sans-serif",
-            size: 12,
-          },
+          font: { family: "'Inter', sans-serif", size: 12 },
           color: isDark ? '#d1d5db' : '#374151',
           padding: 20,
         },
       },
-      title: {
-        display: false,
-      },
+      title: { display: false },
       tooltip: {
         backgroundColor: isDark ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.95)',
         titleColor: isDark ? '#f3f4f6' : '#1f2937',
@@ -69,99 +118,66 @@ export default function GlucoseChart({ records, title = 'Glucose Levels Over Tim
         borderColor: isDark ? '#4b5563' : '#e5e7eb',
         borderWidth: 1,
         padding: 12,
-        cornerRadius: 8,
-        titleFont: {
-          family: "'Inter', sans-serif",
-          size: 14,
-          weight: 'bold',
-        },
-        bodyFont: {
-          family: "'Inter', sans-serif",
-          size: 13,
-        },
-        displayColors: false,
+        cornerRadius: 10,
+        titleFont: { family: "'Inter', sans-serif", size: 14, weight: 'bold' },
+        bodyFont: { family: "'Inter', sans-serif", size: 13 },
+        displayColors: true,
+        usePointStyle: true,
         callbacks: {
-          label: function(context: any) {
-            return `Glucose: ${context.parsed.y} mg/dL`;
-          }
-        }
+          label: (context: any) => {
+            const v = context.parsed.y;
+            if (v == null) return '';
+            const tag =
+              v < targetRange.low ? ' · Low' : v > targetRange.high ? ' · High' : ' · In range';
+            return `${context.dataset.label}: ${v} mg/dL${tag}`;
+          },
+        },
       },
     },
     scales: {
       y: {
         beginAtZero: false,
         grid: {
-          color: isDark ? 'rgba(75, 85, 99, 0.4)' : 'rgba(229, 231, 235, 0.5)',
+          color: isDark ? 'rgba(75, 85, 99, 0.35)' : 'rgba(229, 231, 235, 0.5)',
           drawTicks: false,
         },
-        border: {
-          display: false,
-        },
+        border: { display: false },
         ticks: {
-          font: {
-            family: "'Inter', sans-serif",
-            size: 11,
-          },
+          font: { family: "'Inter', sans-serif", size: 11 },
           color: isDark ? '#9ca3af' : '#6b7280',
           padding: 8,
         },
         title: {
           display: true,
           text: 'Glucose Level (mg/dL)',
-          font: {
-            family: "'Inter', sans-serif",
-            size: 12,
-            weight: 500,
-          },
+          font: { family: "'Inter', sans-serif", size: 12, weight: 500 },
           color: isDark ? '#9ca3af' : '#4b5563',
-          padding: {
-            bottom: 10,
-          }
+          padding: { bottom: 10 },
         },
       },
       x: {
-        grid: {
-          display: false,
-          drawTicks: false,
-        },
-        border: {
-          display: false,
-        },
+        grid: { display: false, drawTicks: false },
+        border: { display: false },
         ticks: {
-          font: {
-            family: "'Inter', sans-serif",
-            size: 11,
-          },
+          font: { family: "'Inter', sans-serif", size: 11 },
           color: isDark ? '#9ca3af' : '#6b7280',
           padding: 8,
         },
-      }
+      },
     },
     elements: {
-      line: {
-        tension: 0.3,
-        borderWidth: 2,
-      },
-      point: {
-        radius: 4,
-        hoverRadius: 6,
-        borderWidth: 2,
-        backgroundColor: isDark ? '#1f2937' : 'white',
-      }
+      line: { tension: 0.4, borderWidth: 2.5 },
+      point: { borderWidth: 2, backgroundColor: isDark ? '#1f2937' : 'white' },
     },
   };
 
   if (!chartData || records.length === 0) {
     return (
       <div className={`h-64 flex flex-col items-center justify-center rounded-lg p-6 border ${
-        isDark
-          ? 'bg-gradient-to-br from-gray-800 to-gray-900 border-gray-700'
-          : 'bg-gradient-to-br from-primary-50 to-accent-50/30 border-primary-100'
+        isDark ? 'bg-gradient-to-br from-gray-800 to-gray-900 border-gray-700' : 'bg-gradient-to-br from-primary-50 to-accent-50/30 border-primary-100'
       }`}>
-        <div className={`p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-sm ${
-          isDark ? 'bg-gray-700/80' : 'bg-white/80'
-        }`}>
-          <svg className={`w-10 h-10 ${isDark ? 'text-primary-400' : 'text-primary-300'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <div className={`p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-sm animate-bounce-subtle ${isDark ? 'bg-gray-700/80' : 'bg-white/80'}`}>
+          <svg className={`w-10 h-10 ${isDark ? 'text-primary-400' : 'text-primary-300'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
           </svg>
         </div>
@@ -173,22 +189,20 @@ export default function GlucoseChart({ records, title = 'Glucose Levels Over Tim
   }
 
   return (
-    <div>
+    <div className="animate-fade-in">
       <div className="mb-6">
-        <h3 className="text-lg font-semibold gradient-text">{title}</h3>
+        <h3 className="text-lg font-semibold gradient-text-animated">{title}</h3>
         <div className={`flex items-center text-sm mt-1 ${isDark ? 'text-gray-400' : 'text-neutral-500'}`}>
-          <svg className="w-4 h-4 mr-1 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-          </svg>
-          <span>Track your glucose levels over time</span>
+          <span className="inline-flex items-center gap-1 mr-3">
+            <span className="w-3 h-2 rounded-sm bg-emerald-500/40 ring-1 ring-emerald-500/60" />
+            Target {targetRange.low}–{targetRange.high} mg/dL
+          </span>
         </div>
       </div>
       <div className={`h-72 md:h-80 p-4 rounded-lg shadow-sm ${
-        isDark
-          ? 'bg-gray-800 border border-gray-700'
-          : 'bg-white border border-neutral-100'
+        isDark ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-neutral-100'
       }`}>
-        <Line options={options} data={chartData} />
+        <Line options={options} data={chartData} plugins={[targetBandPlugin]} />
       </div>
     </div>
   );

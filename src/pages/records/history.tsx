@@ -119,8 +119,8 @@ function RecordsHistoryContent() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-        <h1 className={`text-2xl font-bold mb-4 md:mb-0 ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>Your Glucose Records</h1>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 animate-fade-in-down">
+        <h1 className="text-3xl font-bold mb-4 md:mb-0 gradient-text-animated">Your Glucose Records</h1>
 
         <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
           <div>
@@ -156,10 +156,10 @@ function RecordsHistoryContent() {
       </div>
 
       {loading ? (
-        <div className={`rounded-xl shadow-sm p-12 text-center border ${
-          isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
-        }`}>
-          <p className={isDark ? 'text-gray-400' : 'text-gray-600'}>Loading records...</p>
+        <div className="space-y-4">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="card-aurora"><div className="skeleton h-14 w-full rounded-lg" /></div>
+          ))}
         </div>
       ) : (
         <RecordsList records={records} groupBy={groupBy} />

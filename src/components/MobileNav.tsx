@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -23,32 +23,41 @@ const MobileNav: React.FC<MobileNavProps> = ({ isOpen, setIsOpen, user, handleSi
       : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700/30';
   };
 
-  // Add body scroll lock when menu is open
+  const [render, setRender] = useState(false);
+  const [show, setShow] = useState(false);
+
+  // Mount + animate in / out
   useEffect(() => {
     if (isOpen) {
+      setRender(true);
       document.body.style.overflow = 'hidden';
+      const t = setTimeout(() => setShow(true), 10);
+      return () => clearTimeout(t);
     } else {
+      setShow(false);
       document.body.style.overflow = '';
+      const t = setTimeout(() => setRender(false), 320);
+      return () => clearTimeout(t);
     }
-
-    return () => {
-      document.body.style.overflow = '';
-    };
   }, [isOpen]);
 
-  if (!isOpen) return null;
+  useEffect(() => () => { document.body.style.overflow = ''; }, []);
+
+  if (!render) return null;
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden">
       {/* Background overlay */}
       <div
-        className="fixed inset-0 bg-neutral-900/80 backdrop-blur-sm transition-opacity"
+        className={`fixed inset-0 bg-neutral-900/80 backdrop-blur-sm transition-opacity duration-300 ${show ? 'opacity-100' : 'opacity-0'}`}
         onClick={() => setIsOpen(false)}
         aria-hidden="true"
       ></div>
 
       {/* Mobile navigation panel */}
-      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-xs bg-white dark:bg-neutral-800 shadow-xl transform transition-all duration-300 ease-in-out">
+      <div
+        className={`fixed inset-y-0 right-0 z-50 w-full max-w-xs bg-white dark:bg-neutral-800 shadow-2xl transform transition-transform duration-300 ease-out ${show ? 'translate-x-0' : 'translate-x-full'}`}
+      >
         <div className="flex flex-col h-full overflow-y-auto">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-neutral-200 dark:border-neutral-700">
@@ -74,7 +83,7 @@ const MobileNav: React.FC<MobileNavProps> = ({ isOpen, setIsOpen, user, handleSi
 
           {/* Navigation links */}
           {user ? (
-            <div className="flex-1 py-4 px-2 space-y-1">
+            <div className="flex-1 py-4 px-2 space-y-1 stagger">
               <Link href="/dashboard"
                 className={`flex items-center space-x-3 px-4 py-3 rounded-lg ${isActive('/dashboard')}`}
                 onClick={() => setIsOpen(false)}
@@ -137,7 +146,7 @@ const MobileNav: React.FC<MobileNavProps> = ({ isOpen, setIsOpen, user, handleSi
               </Link>
             </div>
           ) : (
-            <div className="flex-1 py-4 px-2 space-y-1">
+            <div className="flex-1 py-4 px-2 space-y-1 stagger">
               <Link href="/auth"
                 className={`flex items-center space-x-3 px-4 py-3 rounded-lg ${isActive('/auth')}`}
                 onClick={() => setIsOpen(false)}

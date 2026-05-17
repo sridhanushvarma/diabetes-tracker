@@ -1,6 +1,9 @@
 import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
 import { ThemeProvider } from '@/contexts/ThemeContext';
+import { PreferencesProvider } from '@/contexts/PreferencesContext';
+import { ToastProvider } from '@/contexts/ToastContext';
+import ScrollProgress from '@/components/ScrollProgress';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
@@ -71,7 +74,14 @@ export default function App({ Component, pageProps }: AppProps) {
         )}
       </Head>
       <ThemeProvider>
-        <Component {...pageProps} />
+        <PreferencesProvider>
+          <ToastProvider>
+            <ScrollProgress />
+            <div key={router.asPath} className="animate-page-enter">
+              <Component {...pageProps} />
+            </div>
+          </ToastProvider>
+        </PreferencesProvider>
       </ThemeProvider>
     </>
   );
